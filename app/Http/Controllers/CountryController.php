@@ -43,8 +43,13 @@ class CountryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Country $country)
+    public function update(Request $request, $id)
     {
+        $country = Country::find($id);
+        if(!$country){
+            return \response()->json(['message' => 'No se pudo realizar correctaemnete la operación'], 404);
+        }
+        
         $request->validate([
             'name' => 'required',
             'capital' => 'required',
