@@ -8,19 +8,28 @@ use Illuminate\Http\Request;
 class CountryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado de países
      */
     public function index()
     {
-        //
+        return Country::all();
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Almacena un país en la base de datos.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'capital' => 'required',
+        ]);
+        $country = new Country();
+        $country->name = $request->name;
+        $country->capital = $request->capital;
+        $country->save();
+        return $country;
+
     }
 
     /**
@@ -28,7 +37,7 @@ class CountryController extends Controller
      */
     public function show(Country $country)
     {
-        //
+        return $country;
     }
 
     /**
@@ -36,14 +45,30 @@ class CountryController extends Controller
      */
     public function update(Request $request, Country $country)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'capital' => 'required',
+        ]);
+
+        $country->name = $request->name;
+        $country->capital = $request->capital;
+        $country->update();
+        return $country;
+        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Country $country)
+    public function destroy($id)
     {
-        //
+        $country = Country::find($id);
+
+        if(!$country){
+            return \response()->json(['message' => 'No se pudo realizar correctaemnete la operación'], 404);
+        }
+
+        $country->delete();
+        return \response()->noContent();
     }
 }
